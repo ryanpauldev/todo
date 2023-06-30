@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TaskList from './TaskList';
 import TaskForm from './TaskForm';
 
+
 function App() {
   const [tasks, setTasks] = useState([]); // Initialize with empty array
 
