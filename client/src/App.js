@@ -7,9 +7,12 @@ function App() {
 
   // Function to fetch tasks from your API
   const fetchTasks = async () => {
-    const res = await fetch('/api/tasks'); // Replace with your API endpoint
+    const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/tasks`);
+    if (!res.ok) {
+      console.log('Error with response', res);
+      return;
+    }
     const data = await res.json();
-
     setTasks(data);
   }
 

@@ -5,7 +5,7 @@ function TaskForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks`, {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/api/tasks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

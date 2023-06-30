@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import TaskItem from './TaskItem';
 
-function TaskList() {
-    const [tasks, setTasks] = useState([]);
-
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks`)
-            .then(response => response.json())
-            .then(data => setTasks(data));
-    }, []);
-
+function TaskList({ tasks }) {
     return (
         <div>
             {tasks.map(task => (
@@ -19,4 +11,4 @@ function TaskList() {
     );
 }
 
-export default TaskList;  // Here's the default export
+export default TaskList;
