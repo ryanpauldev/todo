@@ -43,14 +43,21 @@ function TaskItem({ task, fetchTasks, index }) {
 
     const handleDragStart = (e) => {
         e.dataTransfer.setData('text', task._id);
+        e.target.classList.add('dragging');
       };
+    
+    const handleDragEnd = (e) => {
+    e.target.classList.remove('dragging');
+    };
 
     return (
         <div 
         draggable 
         onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
         data-index={index}
-        >
+        className='task-item' // make sure this class matches the one in your CSS
+      >
         <h2>{task.title}</h2>
         <p>{task.description}</p>
         <p>Status: {task.status}</p>

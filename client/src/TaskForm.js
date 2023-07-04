@@ -42,13 +42,6 @@ function TaskForm({ fetchTasks }) {
           onChange={e => setDescription(e.target.value)}
           placeholder="Description" 
         />
-        <select
-          value={status}
-          onChange={e => setStatus(e.target.value)}
-        >
-          <option value="incomplete">Incomplete</option>
-          <option value="complete">Complete</option>
-        </select>
         <input type="submit" value="Add Task" />
     </form>
   );
