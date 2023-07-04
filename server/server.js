@@ -24,14 +24,22 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
     // POST /tasks - Add a new task
     app.post('/api/tasks', async (req, res) => {
-      const task = new Task(req.body);
+      // Count the current number of tasks
+      const count = await Task.countDocuments();
+
+      // Add the new task with an order that puts it at the end of the list
+      const task = new Task({
+        ...req.body,
+        order: count,
+      });
+
       await task.save();
       res.send(task);
     });
 
     // GET /tasks - Get all tasks
     app.get('/api/tasks', async (req, res) => {
-      const tasks = await Task.find();
+      const tasks = await Task.find().sort('order');
       res.send(tasks);
     });
 
@@ -41,9 +49,48 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
       res.send(task);
     });
 
+    // PUT /tasks/order - Update order of tasks
+    app.put('/api/tasks/order', async (req, res) => {
+      const { order } = req.body;
+
+      // Find all tasks from DB
+      const tasks = await Task.find({}).exec();
+
+      // Update each task's order
+      const updates = tasks.map(task => {
+        const orderIndex = order.indexOf(task._id.toString());
+        if (orderIndex > -1) {
+          task.order = orderIndex;
+          return task.save();  // Save task with new order
+        }
+        return null;
+      });
+
+      // Wait for all tasks to finish updating
+      await Promise.all(updates);
+
+      res.json({ success: true });
+    });
+
     // DELETE /tasks/:id - Delete a task by id
     app.delete('/api/tasks/:id', async (req, res) => {
-      await Task.findByIdAndDelete(req.params.id);
+      const taskToRemove = await Task.findById(req.params.id);
+      
+      // Remove the task
+      await taskToRemove.remove();
+
+      // Find all tasks that have a higher order than the removed task
+      const tasksToUpdate = await Task.find({ order: { $gt: taskToRemove.order } });
+
+      // Decrease their order by 1
+      const updates = tasksToUpdate.map(task => {
+        task.order -= 1;
+        return task.save();
+      });
+
+      // Wait for all tasks to finish updating
+      await Promise.all(updates);
+
       res.send({ message: 'Task removed' });
     });
 

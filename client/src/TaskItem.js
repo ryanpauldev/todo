@@ -1,10 +1,10 @@
 import React from 'react';
 
-function TaskItem({ task, fetchTasks }) {
+function TaskItem({ task, fetchTasks, index }) {
     const updateTask = () => {
         const updatedStatus = task.status === 'incomplete' ? 'complete' : 'incomplete';
         
-        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${task._id}`, {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/api/tasks/${task._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ function TaskItem({ task, fetchTasks }) {
     };
 
     const deleteTask = () => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${task._id}`, {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/api/tasks/${task._id}`, {
             method: 'DELETE',
         })
             .then(response => {
@@ -41,13 +41,21 @@ function TaskItem({ task, fetchTasks }) {
             });
     };
 
+    const handleDragStart = (e) => {
+        e.dataTransfer.setData('text', task._id);
+      };
+
     return (
-        <div>
-            <h2>{task.title}</h2>
-            <p>{task.description}</p>
-            <p>Status: {task.status}</p>
-            <button onClick={updateTask}>Toggle Status</button>
-            <button onClick={deleteTask}>Delete</button>
+        <div 
+        draggable 
+        onDragStart={handleDragStart}
+        data-index={index}
+        >
+        <h2>{task.title}</h2>
+        <p>{task.description}</p>
+        <p>Status: {task.status}</p>
+        <button onClick={updateTask}>Toggle Status</button>
+        <button onClick={deleteTask}>Delete</button>
         </div>
     );
 }

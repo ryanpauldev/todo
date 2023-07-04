@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TaskList from './TaskList';
 import TaskForm from './TaskForm';
-
+import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]); // Initialize with empty array
@@ -31,4 +31,3 @@ function App() {
 }
 
 export default App;
-

@@ -17,6 +17,11 @@ const TaskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  order: {  // Add order field
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model('Task', TaskSchema);
+
