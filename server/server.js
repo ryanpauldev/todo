@@ -76,8 +76,11 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
     app.delete('/api/tasks/:id', async (req, res) => {
       const taskToRemove = await Task.findById(req.params.id);
       
-      // Remove the task
-      await taskToRemove.remove();
+      if (!taskToRemove) {
+        return res.status(404).send({ message: 'Task not found' });
+      }
+
+      await Task.findByIdAndDelete(req.params.id);
 
       // Find all tasks that have a higher order than the removed task
       const tasksToUpdate = await Task.find({ order: { $gt: taskToRemove.order } });
@@ -93,6 +96,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
       res.send({ message: 'Task removed' });
     });
+
 
     // Then place this middleware
     app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
